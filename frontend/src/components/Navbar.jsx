@@ -25,7 +25,7 @@ const navlinks =["About", "Courses", "Contact"]
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className={`w-full sm:px-4 sm:py-3 px-3 py-2 fixed top-0 left-0 z-50 transition-all  ${
-        sticky ? "shadow-lg bg-gray-900 text-white" : "bg-transparent text-black"
+        sticky ? "shadow-lg bg-gray-900 text-white" : "bg-white text-black"
       }`}
     >
       <div className="flex items-center justify-between max-w-6xl mx-auto">
@@ -72,7 +72,7 @@ const navlinks =["About", "Courses", "Contact"]
         {/* Mobile Menu Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="md:hidden text-gray-400"
+          className="md:hidden text-white"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <MdClear size={28} /> : <FiMenu size={28} />}
