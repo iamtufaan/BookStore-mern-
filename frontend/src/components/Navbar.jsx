@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiSearch, FiMenu, FiX } from "react-icons/fi";
+import { FiSearch, FiMenu } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { MdClear } from "react-icons/md";
 
@@ -8,7 +8,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const navigate = useNavigate();
-const navlinks =["About", "Courses", "Contact"]
+  const navlinks = ["About", "Courses", "Contact"];
+
   useEffect(() => {
     const handleScroll = () => {
       setSticky(window.scrollY > 0);
@@ -24,7 +25,7 @@ const navlinks =["About", "Courses", "Contact"]
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`w-full sm:px-4 sm:py-3 px-3 py-2 fixed top-0 left-0 z-50 transition-all  ${
+      className={`w-full sm:px-4 sm:py-3 px-3 py-2 fixed top-0 left-0 z-50 transition-all ${
         sticky ? "shadow-lg bg-gray-900 text-white" : "bg-white text-black"
       }`}
     >
@@ -72,7 +73,7 @@ const navlinks =["About", "Courses", "Contact"]
         {/* Mobile Menu Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="md:hidden text-white"
+          className={`md:hidden ${sticky ? "text-white" : "text-black"}`} // Dynamically change icon color
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <MdClear size={28} /> : <FiMenu size={28} />}
@@ -100,7 +101,7 @@ const navlinks =["About", "Courses", "Contact"]
 
         {/* Mobile Navigation Links */}
         <div className="w-full flex flex-col items-center space-y-4 mt-4">
-          {["About", "Courses", "Contact"].map((item, index) => (
+          {navlinks.map((item, index) => (
             <motion.div
               key={index}
               whileHover={{ scale: 1.1, color: "#fbbf24" }}
