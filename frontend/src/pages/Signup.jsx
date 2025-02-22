@@ -1,34 +1,61 @@
 import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {toast} from "react-toastify"
 
 const Signup = () => {
-  const [name, setName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Signup Successful!");
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post("http://localhost:6969/user/signup", {
+        fullName,
+        email,
+        password,
+      });
+
+      console.log("Signup Response:", response.data);
+      toast.success("Signup Successful!");
+      localStorage.setItem("user", JSON.stringify(response.data))
+      navigate("/login"); // Redirect to login page after successful signup
+    } catch (err) {
+      console.error("Signup Error:", err.response?.data || err.message);
+      setError(err.response?.data?.message || "user already exists!");
+      toast.error('user already exists')
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="w-full h-screen flex items-center justify-center py-24  ">
+    <div className="w-full h-screen flex items-center justify-center py-24">
       {/* Glassmorphism Card */}
-      <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-2xl p-8 sm:w-96 w-80 ">
+      <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-2xl p-8 sm:w-96 w-80">
         <h2 className="text-3xl font-bold text-center mb-5">Create Account 🎉</h2>
+
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          
           {/* Name Input */}
           <div className="relative">
             <FaUser className="absolute left-3 top-3 text-gray-600" />
             <input
               type="text"
               placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
               required
-              className="w-full px-10 py-3 rounded-md bg-white bg-opacity-20  placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+              className="w-full px-10 py-3 rounded-md bg-white bg-opacity-20 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-300"
             />
           </div>
 
@@ -41,7 +68,7 @@ const Signup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-10 py-3 rounded-md bg-white bg-opacity-20  placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+              className="w-full px-10 py-3 rounded-md bg-white bg-opacity-20 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-green-300"
             />
           </div>
 
@@ -54,16 +81,19 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-10 py-3 rounded-md bg-white bg-opacity-20  placeholder-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300"
+              className="w-full px-10 py-3 rounded-md bg-white bg-opacity-20 placeholder-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300"
             />
           </div>
 
           {/* Signup Button */}
           <button
             type="submit"
-            className="w-full bg-green-500 text-white hover:bg-green-600 py-3 rounded-md text-lg font-semibold transition active:scale-95"
+            disabled={loading}
+            className={`w-full text-white py-3 rounded-md text-lg font-semibold transition active:scale-95 ${
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
+            }`}
           >
-            Sign Up
+            {loading ? "Signing Up..." : "Sign Up"}
           </button>
         </form>
 
@@ -71,7 +101,7 @@ const Signup = () => {
         <div className="text-center mt-5 text-sm">
           <p>
             Already have an account?{" "}
-            <Link to={'/login'} className="text-green-300 hover:underline">
+            <Link to="/login" className="text-green-300 hover:underline">
               Login
             </Link>
           </p>

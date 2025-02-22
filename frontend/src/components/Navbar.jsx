@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiSearch, FiMenu } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { MdClear } from "react-icons/md";
+import { AuthContext } from "../../context/AuthProvider";
+import { toast } from "react-toastify";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sticky, setSticky] = useState(false);
   const navigate = useNavigate();
   const navlinks = ["About", "Courses", "Contact"];
+  const { authUser, setAuthUser } = useContext(AuthContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +22,14 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  const handleLogout = () => {
+    setAuthUser(null); // Clear auth state
+    localStorage.removeItem("authUser"); // Remove user from localStorage
+    toast.success("Logout successfully");
+    navigate("/login"); // Redirect to login page
+  
+  };
 
   return (
     <motion.nav
@@ -60,20 +71,33 @@ const Navbar = () => {
               </Link>
             </motion.div>
           ))}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            className="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </motion.button>
+
+          {/* Login/Logout Button */}
+          {authUser ? (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition"
+              onClick={handleLogout}
+            >
+              Logout
+            </motion.button>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </motion.button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className={`md:hidden ${sticky ? "text-white" : "text-black"}`} // Dynamically change icon color
+          className={`md:hidden ${sticky ? "text-white" : "text-black"}`}
           onClick={() => setMenuOpen(!menuOpen)}
         >
           {menuOpen ? <MdClear size={28} /> : <FiMenu size={28} />}
@@ -110,7 +134,7 @@ const Navbar = () => {
               <Link
                 to={`/${item.toLowerCase()}`}
                 className="hover:text-yellow-400 transition text-lg font-medium"
-                onClick={() => setMenuOpen(false)} // Close menu on click
+                onClick={() => setMenuOpen(false)}
               >
                 {item}
               </Link>
@@ -118,18 +142,33 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* Mobile Login Button */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          className="bg-blue-500 px-6 py-2 rounded-lg hover:bg-blue-600 transition mt-4"
-          onClick={() => {
-            setMenuOpen(false);
-            navigate("/login");
-          }}
-        >
-          Login
-        </motion.button>
+        {/* Mobile Login/Logout Button */}
+        {authUser ? (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="bg-red-500 px-6 py-2 rounded-lg hover:bg-red-600 transition mt-4"
+            onClick={() => {
+              setMenuOpen(false);
+              handleLogout();
+            }}
+          >
+            Logout
+          </motion.button>
+        ) : (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="bg-blue-500 px-6 py-2 rounded-lg hover:bg-blue-600 transition mt-4"
+            onClick={() => {
+              setMenuOpen(false);
+              window.location.reload()
+              navigate("/login");
+            }}
+          >
+            Login
+          </motion.button>
+        )}
       </motion.div>
     </motion.nav>
   );

@@ -20,8 +20,8 @@ const HomeBanner = () => {
           perfect book.
         </p>
 
-        {/* Email Input Field */}
-        <div className="mt-3 border rounded-lg px-3 py-2 flex items-center border-gray-400 bg-white shadow-md">
+        
+        {/* <div className="mt-3 border rounded-lg px-3 py-2 flex items-center border-gray-400 bg-white shadow-md">
           <MdEmail fontSize={24} className="text-gray-600" />
           <input
             type="email"
@@ -30,14 +30,14 @@ const HomeBanner = () => {
           />
         </div>
 
-        {/* Submit Button */}
+       
         <motion.button
           className="bg-pink-500 text-white px-6 py-3 rounded-lg cursor-pointer active:scale-90 transition duration-300 hover:bg-pink-600 shadow-md"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.9 }}
         >
           Submit
-        </motion.button>
+        </motion.button> */}
       </motion.div>
 
       {/* Right Image Section */}
